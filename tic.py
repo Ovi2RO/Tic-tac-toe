@@ -1,5 +1,8 @@
 from tkinter import *
+from tkinter import ttk
 import random
+import sv_ttk
+
 
 def next_turn(row, column):
     global player
@@ -31,14 +34,14 @@ def check_winner():
             buttons[row][1].config(bg="green")
             buttons[row][2].config(bg="green")
             return True
-        
+
     for column in range(3):
         if buttons[0][column]["text"] == buttons[1][column]["text"] == buttons[2][column]["text"] != "":
             buttons[0][column].config(bg="green")
             buttons[1][column].config(bg="green")
             buttons[2][column].config(bg="green")
             return True
-    
+
     if buttons[0][0]["text"] == buttons[1][1]["text"] == buttons[2][2]["text"] != "":
         buttons[0][0].config(bg="green")
         buttons[1][1].config(bg="green")
@@ -65,11 +68,12 @@ def empty_spaces():
         for column in range(3):
             if buttons[row][column]["text"] != "":
                 spaces -= 1
-    
+
     if spaces == 0:
         return False
     else:
         return True
+
 
 def new_game():
     global player
@@ -81,21 +85,23 @@ def new_game():
             buttons[row][column].config(text="", bg="#f0f0f0")
 
 
-
 window = Tk()
 window.title("Tic-Tac-Bully")
+
+# Create the Tk instance before setting the theme
+sv_ttk.set_theme("dark")
 
 players = ["X", "O"]
 player = random.choice(players)
 buttons = [
-    [0,0,0],
-    [0,0,0],
-    [0,0,0]
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0]
 ]
-label = Label(text=player + " turn", font=("consolas", 40))
+label = Label(window, text=player + " turn", font=("consolas", 40))
 label.pack(side="top")
 
-reset_button = Button(text="Restart", font=("consolas", 20), command=new_game)
+reset_button = Button(window, text="Restart", font=("consolas", 20), command=new_game)
 reset_button.pack(side="top")
 
 frame = Frame(window)
@@ -105,6 +111,6 @@ for row in range(3):
     for column in range(3):
         buttons[row][column] = Button(frame, text="", font=("consolas", 40), width=5, height=2,
                                       command=lambda row=row, column=column: next_turn(row, column))
-        buttons[row][column].grid(row=row,column=column)
+        buttons[row][column].grid(row=row, column=column)
 
 window.mainloop()
