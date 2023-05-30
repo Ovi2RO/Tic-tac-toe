@@ -74,30 +74,6 @@ def next_turn(row, column):
             elif check_winner() == "Tie":
                 label.config(text=("Tie!!!"))
 
-# def computer_move():
-#     global player
-#     bestScore = -float('inf')
-#     bestMove = None
-
-#     for row in range(3):
-#         for column in range(3):
-#             if buttons[row][column]["text"] == "":
-#                 buttons[row][column]["text"] = players[1]
-#                 score = minimax(0, False)
-#                 buttons[row][column]["text"] = ""
-#                 if score is not None and score > bestScore:
-#                     bestScore = score
-#                     bestMove = (row, column)
-
-#     buttons[bestMove[0]][bestMove[1]]["text"] = players[1]
-#     if check_winner() is False:
-#         player = players[0]
-#         label.config(text=(players[0] + " turn"))
-#     elif check_winner() is True:
-#         label.config(text=(players[1] + " wins"))
-#     elif check_winner() == "Tie":
-#         label.config(text=("Tie!!!"))
-
 def check_winner():
     for row in range(3):
         if buttons[row][0]["text"] == buttons[row][1]["text"] == buttons[row][2]["text"] != "":
