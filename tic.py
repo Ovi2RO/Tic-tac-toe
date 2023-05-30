@@ -1,5 +1,6 @@
 from tkinter import *
 import sv_ttk
+import time
 
 def evaluate_board():
     if check_winner() == players[0]:
@@ -39,7 +40,7 @@ def computer_move():
     global player
     bestScore = -float('inf')
     bestMove = None
-
+    
     for row in range(3):
         for column in range(3):
             if buttons[row][column]["text"] == "":
@@ -73,29 +74,29 @@ def next_turn(row, column):
             elif check_winner() == "Tie":
                 label.config(text=("Tie!!!"))
 
-def computer_move():
-    global player
-    bestScore = -float('inf')
-    bestMove = None
+# def computer_move():
+#     global player
+#     bestScore = -float('inf')
+#     bestMove = None
 
-    for row in range(3):
-        for column in range(3):
-            if buttons[row][column]["text"] == "":
-                buttons[row][column]["text"] = players[1]
-                score = minimax(0, False)
-                buttons[row][column]["text"] = ""
-                if score is not None and score > bestScore:
-                    bestScore = score
-                    bestMove = (row, column)
+#     for row in range(3):
+#         for column in range(3):
+#             if buttons[row][column]["text"] == "":
+#                 buttons[row][column]["text"] = players[1]
+#                 score = minimax(0, False)
+#                 buttons[row][column]["text"] = ""
+#                 if score is not None and score > bestScore:
+#                     bestScore = score
+#                     bestMove = (row, column)
 
-    buttons[bestMove[0]][bestMove[1]]["text"] = players[1]
-    if check_winner() is False:
-        player = players[0]
-        label.config(text=(players[0] + " turn"))
-    elif check_winner() is True:
-        label.config(text=(players[1] + " wins"))
-    elif check_winner() == "Tie":
-        label.config(text=("Tie!!!"))
+#     buttons[bestMove[0]][bestMove[1]]["text"] = players[1]
+#     if check_winner() is False:
+#         player = players[0]
+#         label.config(text=(players[0] + " turn"))
+#     elif check_winner() is True:
+#         label.config(text=(players[1] + " wins"))
+#     elif check_winner() == "Tie":
+#         label.config(text=("Tie!!!"))
 
 def check_winner():
     for row in range(3):
@@ -103,25 +104,25 @@ def check_winner():
             buttons[row][0].config(bg="green")
             buttons[row][1].config(bg="green")
             buttons[row][2].config(bg="green")
-            return buttons[row][0]["text"]
+            return True
 
     for column in range(3):
         if buttons[0][column]["text"] == buttons[1][column]["text"] == buttons[2][column]["text"] != "":
             buttons[0][column].config(bg="green")
             buttons[1][column].config(bg="green")
             buttons[2][column].config(bg="green")
-            return buttons[0][column]["text"]
+            return True
 
     if buttons[0][0]["text"] == buttons[1][1]["text"] == buttons[2][2]["text"] != "":
         buttons[0][0].config(bg="green")
         buttons[1][1].config(bg="green")
         buttons[2][2].config(bg="green")
-        return buttons[0][0]["text"]
+        return True
     elif buttons[0][2]["text"] == buttons[1][1]["text"] == buttons[2][0]["text"] != "":
         buttons[0][2].config(bg="green")
         buttons[1][1].config(bg="green")
         buttons[2][0].config(bg="green")
-        return buttons[0][2]["text"]
+        return True
     elif empty_spaces() is False:
         return "Tie"
     else:
