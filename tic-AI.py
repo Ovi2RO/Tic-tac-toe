@@ -1,64 +1,58 @@
 from tkinter import *
+import random
 import sv_ttk
 
-def evaluate_board():
-    if check_winner() == players[0]:
-        return -1
-    elif check_winner() == players[1]:
-        return 1
-    elif empty_spaces() is False:
+def score():
+    if check_winner() is True:
+        if player == "X":
+            return -1
+        else:
+            return 1
+    elif check_winner() == "Tie":
         return 0
-    return 0
 
-def minimax(depth, maximizing_player):
-    if check_winner() != False or depth == 0:
-        return evaluate_board()
+# minimax function
+def minimax(is_maximizing):
+    if check_winner() is not False:
+        return score()
 
-    if maximizing_player:
-        maxEval = -float('inf')
+    if is_maximizing:
+        best_score = float('-inf')
         for row in range(3):
             for column in range(3):
                 if buttons[row][column]["text"] == "":
-                    buttons[row][column]["text"] = players[1]
-                    evaluation = minimax(depth - 1, False)
+                    buttons[row][column]["text"] = "O"
+                    score = minimax(False)
                     buttons[row][column]["text"] = ""
-                    maxEval = max(maxEval, evaluation)
-        return maxEval
+                    best_score = max(score, best_score)
+        return best_score
     else:
-        minEval = float('inf')
+        best_score = float('inf')
         for row in range(3):
             for column in range(3):
                 if buttons[row][column]["text"] == "":
-                    buttons[row][column]["text"] = players[0]
-                    evaluation = minimax(depth - 1, True)
+                    buttons[row][column]["text"] = "X"
+                    score = minimax(True)
                     buttons[row][column]["text"] = ""
-                    minEval = min(minEval, evaluation)
-        return minEval
+                    best_score = min(score, best_score)
+        return best_score
 
+# computer move function
 def computer_move():
-    global player
-    bestScore = -float('inf')
-    bestMove = None
+    best_score = float('-inf')
+    move = None
 
     for row in range(3):
         for column in range(3):
             if buttons[row][column]["text"] == "":
-                buttons[row][column]["text"] = players[1]
-                score = minimax(0, False)
+                buttons[row][column]["text"] = "O"
+                score = minimax(False)
                 buttons[row][column]["text"] = ""
-                if score > bestScore:
-                    bestScore = score
-                    bestMove = (row, column)
+                if score > best_score:
+                    best_score = score
+                    move = (row, column)
 
-    buttons[bestMove[0]][bestMove[1]]["text"] = players[1]
-    if check_winner() is False:
-        player = players[0]
-        label.config(text=(players[0] + " turn"))
-    elif check_winner() is True:
-        label.config(text=(players[1] + " wins"))
-    elif check_winner() == "Tie":
-        label.config(text=("Tie!!!"))
-
+    buttons[move[0]][move[1]]["text"] = "O"
 def next_turn(row, column):
     global player
     if buttons[row][column]["text"] == "" and check_winner() is False:
@@ -67,35 +61,12 @@ def next_turn(row, column):
             if check_winner() is False:
                 player = players[1]
                 label.config(text=(players[1] + " turn"))
-                computer_move()
+                computer_move()  # add this line to make the computer move after the player
             elif check_winner() is True:
                 label.config(text=(players[0] + " wins"))
             elif check_winner() == "Tie":
                 label.config(text=("Tie!!!"))
 
-def computer_move():
-    global player
-    bestScore = -float('inf')
-    bestMove = None
-
-    for row in range(3):
-        for column in range(3):
-            if buttons[row][column]["text"] == "":
-                buttons[row][column]["text"] = players[1]
-                score = minimax(0, False)
-                buttons[row][column]["text"] = ""
-                if score is not None and score > bestScore:
-                    bestScore = score
-                    bestMove = (row, column)
-
-    buttons[bestMove[0]][bestMove[1]]["text"] = players[1]
-    if check_winner() is False:
-        player = players[0]
-        label.config(text=(players[0] + " turn"))
-    elif check_winner() is True:
-        label.config(text=(players[1] + " wins"))
-    elif check_winner() == "Tie":
-        label.config(text=("Tie!!!"))
 
 def check_winner():
     for row in range(3):
@@ -103,26 +74,29 @@ def check_winner():
             buttons[row][0].config(bg="green")
             buttons[row][1].config(bg="green")
             buttons[row][2].config(bg="green")
-            return buttons[row][0]["text"]
+            return True
 
     for column in range(3):
         if buttons[0][column]["text"] == buttons[1][column]["text"] == buttons[2][column]["text"] != "":
             buttons[0][column].config(bg="green")
             buttons[1][column].config(bg="green")
             buttons[2][column].config(bg="green")
-            return buttons[0][column]["text"]
+            return True
 
     if buttons[0][0]["text"] == buttons[1][1]["text"] == buttons[2][2]["text"] != "":
         buttons[0][0].config(bg="green")
         buttons[1][1].config(bg="green")
         buttons[2][2].config(bg="green")
-        return buttons[0][0]["text"]
+        return True
     elif buttons[0][2]["text"] == buttons[1][1]["text"] == buttons[2][0]["text"] != "":
         buttons[0][2].config(bg="green")
         buttons[1][1].config(bg="green")
         buttons[2][0].config(bg="green")
-        return buttons[0][2]["text"]
+        return True
     elif empty_spaces() is False:
+        for row in range(3):
+            for column in range(3):
+                buttons[row][column].config(bg="yellow")
         return "Tie"
     else:
         return False
@@ -144,25 +118,22 @@ def empty_spaces():
 
 def new_game():
     global player
-    player = players[0]
+    player = random.choice(players)
     label.config(text=player + " turn")
 
     for row in range(3):
         for column in range(3):
             buttons[row][column].config(text="", bg="#1C1C1C")
-    if check_winner() == False:
-        computer_move()
-
 
 
 window = Tk()
 window.title("Tic-Tac-Bully")
 
-
+# Create the Tk instance before setting the theme
 sv_ttk.set_theme("dark")
 
 players = ["X", "O"]
-player = players[0]
+player = random.choice(players)
 buttons = [
     [0, 0, 0],
     [0, 0, 0],
