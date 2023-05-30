@@ -1,6 +1,7 @@
 from tkinter import *
 import sv_ttk
 import time
+import random
 
 def evaluate_board():
     if check_winner() == players[0]:
@@ -11,47 +12,52 @@ def evaluate_board():
         return 0
     return 0
 
-def minimax(depth, maximizing_player):
-    if check_winner() != False or depth == 0:
-        return evaluate_board()
+# def minimax(depth, maximizing_player):
+#     if check_winner() != False or depth == 0:
+#         return evaluate_board()
 
-    if maximizing_player:
-        maxEval = -float('inf')
-        for row in range(3):
-            for column in range(3):
-                if buttons[row][column]["text"] == "":
-                    buttons[row][column]["text"] = players[1]
-                    evaluation = minimax(depth - 1, False)
-                    buttons[row][column]["text"] = ""
-                    maxEval = max(maxEval, evaluation)
-        return maxEval
-    else:
-        minEval = float('inf')
-        for row in range(3):
-            for column in range(3):
-                if buttons[row][column]["text"] == "":
-                    buttons[row][column]["text"] = players[0]
-                    evaluation = minimax(depth - 1, True)
-                    buttons[row][column]["text"] = ""
-                    minEval = min(minEval, evaluation)
-        return minEval
+#     if maximizing_player:
+#         maxEval = -float('inf')
+#         for row in range(3):
+#             for column in range(3):
+#                 if buttons[row][column]["text"] == "":
+#                     buttons[row][column]["text"] = players[1]
+#                     evaluation = minimax(depth - 1, False)
+#                     buttons[row][column]["text"] = ""
+#                     maxEval = max(maxEval, evaluation)
+#         return maxEval
+#     else:
+#         minEval = float('inf')
+#         for row in range(3):
+#             for column in range(3):
+#                 if buttons[row][column]["text"] == "":
+#                     buttons[row][column]["text"] = players[0]
+#                     evaluation = minimax(depth - 1, True)
+#                     buttons[row][column]["text"] = ""
+#                     minEval = min(minEval, evaluation)
+#         return minEval
 
 def computer_move():
     global player
     bestScore = -float('inf')
     bestMove = None
     
+    # for row in range(3):
+    #     for column in range(3):
+    #         if buttons[row][column]["text"] == "":
+    #             buttons[row][column]["text"] = players[1]
+    #             score = minimax(0, False)
+    #             buttons[row][column]["text"] = ""
+    #             if score > bestScore:
+    #                 bestScore = score
+    #                 bestMove = (row, column)
+    move_options = []
     for row in range(3):
         for column in range(3):
             if buttons[row][column]["text"] == "":
-                buttons[row][column]["text"] = players[1]
-                score = minimax(0, False)
-                buttons[row][column]["text"] = ""
-                if score > bestScore:
-                    bestScore = score
-                    bestMove = (row, column)
-
-    buttons[bestMove[0]][bestMove[1]]["text"] = players[1]
+                move_options.append([row, column])
+    random_choise = random.choice(move_options)
+    buttons[random_choise[0]][random_choise[1]]["text"] = players[1]
     if check_winner() is False:
         player = players[0]
         label.config(text=(players[0] + " turn"))
